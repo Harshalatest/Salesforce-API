@@ -1,0 +1,60 @@
+/*<-- ************************************************************************************************************
+* Name              :  ApiServiceForRoc
+* Summary           :  API for ROC- Sending Licensee/Contactor Info
+*Sending one record details and link wiill be 
+https://domanname.my.salesforce-sites.com/services/apexrest/GetDetailtest/XXXXXX
+
+
+_________________________________________________________________________________________________________________
+
+************************************************************************************************************* >*/
+@RestResource(urlMapping='/GetDetailtest/*') 
+global  class ApiServiceForRoc {
+    
+    
+    @HttpGet
+    global static void doGet() {
+        RestRequest req = RestContext.request;
+        RestResponse res = RestContext.response;
+        String recIdstr = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+        JSONGenerator gen = JSON.createGenerator(true);  // Create a JSONGenerator object.
+        sobject result;
+        gen.writeStartObject();
+        if(string.isNotEmpty(recIdstr)){ // check roc whether empty or not
+            String ROCNo = (recIdstr.startsWith('ROC'))?recIdstr:'ROC '+recIdstr;
+       List<License__c>  LicenseList = [SELECT Id FROM License__c WHERE Name = :ROCNo Limit 1];
+            id licenseId;
+            if(LicenseList != null && LicenseList.size()>0){    //  check License record result whether empty or not
+             result = [SELECT Id, Name, License_Type__c, license_subtype__c,
+                      Status__c,Sub_status__c,Issue_Date__c,Renewed_Through__c,Primary_Licensee__c,
+                      Primary_Licensee__r.Name,Primary_Licensee__r.doing_business_as__c,Primary_Licensee__r.Ownership,
+                      Email__c,Licensee_Phone__c,Doing_Business_As__c FROM License__c WHERE Name = :ROCNo Limit 1];
+                gen.writeObjectField('License', result);
+                if(result.get('Primary_Licensee__c') != null){
+                    licenseId =  (id)result.get('Id');
+                    List<Address_Contact__c> addressInfo = [SELECT id,Physical_Business_Address__c, Address__r.Street__c, Address__r.City__c, Address__r.State__c,Address__r.Post_Zip_Code__c,Address__r.Country__c
+                                                            FROM Address_Contact__c WHERE  (Physical_Business_Address__c = TRUE OR Mailing_Address__c = TRUE) AND License__c =:licenseId AND  Address__r.Status__c ='Active' LIMIT 2];
+                    gen.writeObjectField('Address info', addressInfo);
+                    
+                }
+                List<Qualifying_Party__c> Qualifying_Party_Name = [SELECT Id,Qualifying_Party_Name__c FROM  Qualifying_Party__c WHERE License__c = :licenseId];    
+                gen.writeObjectField('QP Info', Qualifying_Party_Name); 
+            }
+            else{
+                gen.writeObjectField('Warning', 'No records found for this ROC number');
+            }
+        }else{
+            gen.writeObjectField('Warning', 'Please provide ROC number.');
+            
+        }
+          gen.writeEndObject();
+           RestContext.response.addHeader('Content-Type', 'application/json');
+        RestContext.response.responseBody = Blob.valueOf(gen.getAsString());
+    
+      
+       // return gen.getAsString();
+        
+    }
+    
+    
+}
