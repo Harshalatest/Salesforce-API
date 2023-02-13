@@ -65,6 +65,15 @@ Useful video-
 How to Use Postman for Beginners ? | Super Easy !- 
 Saumya Nayak 
 
+screen shot 
+
+
+![image](https://user-images.githubusercontent.com/83326324/218586105-f0f51ccb-be5b-48ae-b8f4-478ee4eed30f.png)
+
+
+
+
+
 From <https://www.youtube.com/watch?v=PdIwggNFVw0> 
 
 
@@ -79,14 +88,57 @@ https://azroc.my.salesforce.com/services/oauth2/token
 I was using https://azroc.lightning.force.com/services/oauth2/token and  this url is wrong we should use > set up>my domain> and current my domain URL 
 
 
+![image](https://user-images.githubusercontent.com/83326324/218586398-31c057b8-4169-4133-9f82-11c6b3b5bc61.png)
+
+
+
 Use same sequence in postman 
+
+
+
+![image](https://user-images.githubusercontent.com/83326324/218586469-7d3b9700-7f95-4a15-990a-cf2f81b134f3.png)
+
+![image](https://user-images.githubusercontent.com/83326324/218586490-0349d62e-9aeb-41da-a3ba-95290cddf7e1.png)
+
+![image](https://user-images.githubusercontent.com/83326324/218586536-3130c26b-7007-482e-84b5-d175da24649b.png)
+
+
+![image](https://user-images.githubusercontent.com/83326324/218586564-a463b383-92dc-436a-93ec-7c47d8745975.png)
+
+
+![image](https://user-images.githubusercontent.com/83326324/218586591-3be798f4-fa3c-49b6-bfad-f0c1cd2fbb8b.png)
+
+
+![image](https://user-images.githubusercontent.com/83326324/218586615-2f4d1d1a-f059-4060-a8f2-e6b7fe180860.png)
+
+
+![image](https://user-images.githubusercontent.com/83326324/218586633-866033ae-bfc2-421f-9ea9-88fcf2999b07.png)
+
+
+![image](https://user-images.githubusercontent.com/83326324/218586650-a47c99b7-9732-47e5-a8ea-044ddb921e4e.png)
+
+
+
+
+
 
 Issue - 3
 
 Issue - 
 Salesforce Integration INVALID_SESSION_ID using Postman
 
+
+![image](https://user-images.githubusercontent.com/83326324/218586913-741d2ee8-a7fe-4fd2-9e42-cf080ceaa3aa.png)
+
+
+![image](https://user-images.githubusercontent.com/83326324/218586938-f139bd91-d07e-4b2d-96f5-71e24c473aaa.png)
+
+
+![image](https://user-images.githubusercontent.com/83326324/218586965-4420ba78-2d39-4b4f-94b3-cfa270e19985.png)
+
+
 From <https://stackoverflow.com/questions/56118080/salesforce-integration-invalid-session-id-using-postman>
+
 
 
 I actually fixed this after banging my head on it forever. You need to go into the settings tab and turn on the Follow Authorization Header setting.
