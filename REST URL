@@ -1,0 +1,68 @@
+ Using workbench:
+ Steps to test this in Workbench:
+	1.  Go to Workbench.com.
+	2.  Select Sandbox as an environment and check the Agree button and click the login button and login with Genesys sandbox cred.
+  
+  
+![image](https://user-images.githubusercontent.com/83326324/218587854-a911442f-b6ed-4355-b863-a5e83ff2c8f7.png)
+
+
+Select Utilities and click Rest explorer.
+
+![image](https://user-images.githubusercontent.com/83326324/218587882-67a5a8e9-9c66-4e1d-ae55-4ccd86567aec.png)
+
+
+Select Get method as HTTP method and Copy and paste any one of the URLs from the above and click execute.
+Note : URL should start from /services/data/  
+
+
+![image](https://user-images.githubusercontent.com/83326324/218587908-2fe44843-2099-4e7d-ab43-826fcf176b91.png)
+
+
+
+2. Using Postman:
+
+URL with subdomain:
+
+![image](https://user-images.githubusercontent.com/83326324/218589902-561e94ee-0c14-4760-bc74-65e852647ffa.png)
+
+
+![image](https://user-images.githubusercontent.com/83326324/218589987-f9fc10f0-fe95-4d64-8f15-268f6676d606.png)
+
+
+Steps to test this in Postman:
+ 
+· Install Postman client in your desktop.
+· Login to the Sandbox and Go to App Manager in the Salesforce quick setup and click New connected App button. 
+
+![image](https://user-images.githubusercontent.com/83326324/218590057-f86afcdf-c75d-4c7a-a89e-216fa1870574.png)
+
+· Fill out the API name and OAuth scope etc. like in below image and click continue key.(It will take some time to show consumer key and consumer secret.)
+
+
+![image](https://user-images.githubusercontent.com/83326324/218590119-4d4dae82-2e9f-40cc-9346-4985613f86e6.png)
+
+After a while it will show consumer key and consumer secret. 
+
+![image](https://user-images.githubusercontent.com/83326324/218590208-c7e47550-9d0e-4033-9a41-dfaeb76a4b33.png)
+
+· We need to frame the URL for accessing the salesforce sandbox like in the below image. 
+
+
+![image](https://user-images.githubusercontent.com/83326324/218590274-64040ad9-13a0-4c52-ae33-09b6bc058387.png)
+
+		1 - Sandbox domain
+		2 - grant_type as password
+		3 - Client Id from the connected App’s consumer key
+		4 - Client secret from the connected App’s consumer secret 
+		5 – Username of the sandbox
+		6 – Password+security token
+
+		Framed URL will be like the below URL:
+    check how to create 
+
+
+
+
+
+
