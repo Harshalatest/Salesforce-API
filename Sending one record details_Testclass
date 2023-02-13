@@ -1,0 +1,79 @@
+/*<-- ************************************************************************************************************
+* Name              :  ApiServiceForRoc_Test
+* Summary           :  Test class for ApiServiceForRoc
+*
+_________________________________________________________________________________________________________________
+
+************************************************************************************************************* >*/
+@isTest  
+public class ApiServiceForRoc_Test {
+  
+ @isTest static void RestRequestDetail() {
+       
+        List<Id> entityId = new List<Id>();
+        Account newAccount = new Account(Name = 'Test',Ownership = 'Other');
+        Insert newAccount;
+
+         License__c lic = new License__c(License_Type__c = 'General Dual',Type__c ='Probation',
+        Status__c ='Suspended',Sub_status__c='Non-Renewal',
+        Expiration_Date__c = System.today().addDays(-180),
+        Primary_Licensee__c= newAccount.Id ); 
+       
+        Insert lic;
+        string licName = [Select id,Name From License__c limit 1]?.Name;
+        // Set up a test request
+        RestRequest request = new RestRequest();
+        RestResponse res = new RestResponse();
+        request.requestUri =
+            'https://yourInstance.my.salesforce.com/services/apexrest/GetDetail/'
+            + licName;
+        request.httpMethod = 'GET';
+        RestContext.request = request;
+        RestContext.response = res;
+        // Call the method to test
+         ApiServiceForRoc.doGet();
+        // Verify results
+      
+       
+    }
+
+
+     @isTest static void accountContactRecDetail() {
+     List<Account>  accList = new List<Account>();
+         Account acc = new Account(Name='Test ',Ownerid =userinfo.getUserId(),Ownership='Partnership');
+            accList.add(acc);
+        insert accList;
+        Contact myContact = new Contact(
+            AccountId = accList[0].id,
+            FirstName = 'Test',
+            MiddleName = 'tc',
+            LastName = 'PaymentTestContact',
+            Email = 'test@email.com',
+            OtherCountry = 'US'
+        );
+        insert myContact;
+        Account_Contact__c accountContactRec = new Account_Contact__c();
+        accountContactRec.Account__c = accList[0].Id;
+        accountContactRec.Contact__c = myContact.Id;
+        accountContactRec.Title__c = 'Partnership';
+        accountContactRec.Email__c = 'testPartnership@yopmail.com';
+        
+        insert accountContactRec;
+        // Set up a test request
+        RestRequest request = new RestRequest();
+         RestResponse res = new RestResponse();
+        request.requestUri =
+            'https://yourInstance.my.salesforce.com/services/apexrest/GetDetail/'
+            + accountContactRec.id;
+        request.httpMethod = 'GET';
+        RestContext.request = request;
+         RestContext.response = res;
+        // Call the method to test
+         ApiServiceForRoc.doGet();
+        
+       
+    }
+
+
+
+}
