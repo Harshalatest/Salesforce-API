@@ -147,5 +147,55 @@ I actually fixed this after banging my head on it forever. You need to go into t
 https://stackoverflow.com/questions/56118080/salesforce-integration-invalid-session-id-using-postman
 
 
+CONNECTED TO SYSTEM 
+
+![image](https://user-images.githubusercontent.com/83326324/218590817-de334c15-795b-42f5-90f5-7ba8753e1d41.png)
+
+![image](https://user-images.githubusercontent.com/83326324/218590865-2517ffd9-49bd-4725-8e33-5fd5ad0456fa.png)
+
+Via code-
+https://azroc--uat.sandbox.lightning.force.com/services/data/v52.0/query/?q=SELECT+name+from+Account
+
+
+ALL RECORD TO PULL 
+
+
+![image](https://user-images.githubusercontent.com/83326324/218590947-6df8cd46-524b-4ce6-a665-8f14be84d5ec.png)
+
+
+Standered  API
+
+https://azroc--uat.sandbox.lightning.force.com/services/data/v52.0/query/?q=SELECT+name+from+License__c+where+LastModifiedDate=TODAY
+
+From <https://desktop.postman.com/?desktopVersion=10.8.0&userId=16248833&teamId=2088569> 
+
+![image](https://user-images.githubusercontent.com/83326324/218591582-b7ec4f71-fec0-4d84-8e12-56dab90924ed.png)
+
+Work Bench -
+
+Workbench > Rest expoler> get > 
+With One Id 
+/services/apexrest/APINASCLA/a0o3R000000jsk7QAA
+
+All record 
+
+/services/apexrest/APINASCLA/
+
+
+Query 
+https://azroc--uat.sandbox.lightning.force.com/services/data/v52.0/query/?q=SELECT+name+from+License__c+where+LastModifiedDate=TODAY
+
+From <https://desktop.postman.com/?desktopVersion=10.8.0&userId=16248833&teamId=2088569> 
+
+
+
+
+
+
+
+
+
+
+
 
 
