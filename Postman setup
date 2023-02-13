@@ -1,0 +1,86 @@
+Postman set up 
+How to connect salesforce to Postman 
+
+
+https://www.sfdcstop.com/2019/01/how-to-connect-to-salesforce-with.html
+
+
+You tube Video - https://www.youtube.com/watch?v=H7k3zlPGlkA
+
+
+
+
+Salesforce to take secreat ley and consumer key 
+
+
+Setup> app> postman>view>mange consumer details> authenticate> copy both key 
+
+
+Seeting> reset secruity token
+
+
+Do all the steps 
+
+I got error - for 
+
+Salesforce auth failed with unsupported_grant_type error
+
+From <https://www.drupal.org/project/salesforce/issues/3131387> 
+
+
+I have to change salesforce URL and working perfect for sandbox 
+
+https://test.salesforce.com 
+
+Link- https://www.drupal.org/project/salesforce/issues/3131387
+
+
+issue - 2 
+
+Postman Issue - 2
+
+Issue- for production 
+
+I am unable to get authorization token
+
+Showing Grant type error, 404 and 400 bad 
+
+Regarding authenticate issue- 
+
+Useful video- 
+· https://www.youtube.com/watch?v=PdIwggNFVw0
+How to Use Postman for Beginners ? | Super Easy !- 
+Saumya Nayak 
+
+From <https://www.youtube.com/watch?v=PdIwggNFVw0> 
+
+
+From <https://www.youtube.com/watch?v=PdIwggNFVw0> 
+
+
+
+· Postman login > post > 
+https://azroc.my.salesforce.com/services/oauth2/token
+
+
+I was using https://azroc.lightning.force.com/services/oauth2/token and  this url is wrong we should use > set up>my domain> and current my domain URL 
+
+
+Use same sequence in postman 
+
+Issue - 3
+
+Issue - 
+Salesforce Integration INVALID_SESSION_ID using Postman
+
+From <https://stackoverflow.com/questions/56118080/salesforce-integration-invalid-session-id-using-postman>
+
+
+I actually fixed this after banging my head on it forever. You need to go into the settings tab and turn on the Follow Authorization Header setting.
+
+
+https://stackoverflow.com/questions/56118080/salesforce-integration-invalid-session-id-using-postman
+
+
+
+
