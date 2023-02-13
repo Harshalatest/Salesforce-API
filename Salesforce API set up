@@ -1,0 +1,16 @@
+In the salesforce you have do below set up
+	create New api apex class 
+	thean create new test class for that api class 
+	in salesforce seeting - set up 
+	site 
+	click on 	Integration
+	click on public acess settings
+	click on apex class acess 
+	edit 
+	add created apex class to profile 
+	save 
+	
+
+	if salesforce dont have intgration user just create new one
+	**** to work on the api integartion user should have access for this api class, without have acess will not work
+
