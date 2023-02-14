@@ -1,0 +1,107 @@
+/*
+ * This class will retrview all the record with 200 set 
+ * Will show next link
+ * onces record is done show the message "All records have been retrieved." in last page 
+ This code will give 200 record bacth
+ showing next record link
+ if record is finsh and link is onpen showing no record found message 
+ this code will give jason format 
+ * 
+ * */
+
+
+/*
+// First class with No url 
+@RestResource(urlMapping='/ROCAPILicenses/*') 
+global class ROCAPILicenses {
+
+    @HttpGet
+    global static void doGet() {
+        RestRequest req = RestContext.request;
+        RestResponse res = RestContext.response;
+        String recIdstr = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+        Integer offset = 0; 
+        Integer totalRecords = 0;
+        JSONGenerator gen = JSON.createGenerator(true);  // Create a JSONGenerator object.
+        gen.writeStartObject();
+        List<License__c> result = [SELECT Id, Name, CreatedDate,License_Type__c, license_subtype__c,Issue_Date__c,Expiration_Date__c,Status__c,
+                                 Sub_status__c,Renewed_Through__c,Primary_Licensee__c,Email__c,Licensee_Phone__c,Doing_Business_As__c,
+                                 //Account 
+                                 Primary_Licensee__r.Name,Primary_Licensee__r.doing_business_as__c,Primary_Licensee__r.Ownership,
+                                 Primary_Licensee__r.Email__c,Primary_Licensee__r.ROC_Address__c,Primary_Licensee__r.ROC_Unit__c,
+                                 Primary_Licensee__r.ROC_City__c,Primary_Licensee__r.ROC_State_Province__c,Primary_Licensee__r.ROC_Zip_Postal_Code__c,
+                                 Primary_Licensee__r.ROC_Country__c,Primary_Licensee__r.Phone,Primary_Licensee__r.Mobile__c
+                                 FROM License__c where 
+                                 LastModifiedDate = TODAY
+                                 // LastModifiedDate = Yesterday 
+                                 ];
+
+        if(result.size() > 0){
+            gen.writeObjectField('Licenses', result);
+        } else {
+            gen.writeObjectField('Warning', 'No records found.');
+        }
+
+        gen.writeEndObject();
+        RestContext.response.addHeader('Content-Type', 'application/json');
+        RestContext.response.responseBody = Blob.valueOf(gen.getAsString());
+    }
+}
+
+*/
+
+
+//**********************************************************************************************
+  
+    @RestResource(urlMapping='/ROCAPILicenses/*')
+global class ROCAPILicenses {
+    
+    @HttpGet
+    global static void doGet() {
+        RestRequest req = RestContext.request;
+        RestResponse res = RestContext.response;
+        String recIdstr = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+        Integer offset = 0; 
+        if(req.params.get('offset') != null) {
+            offset = Integer.valueOf(req.params.get('offset'));
+        }
+        List<License__c> result = [SELECT Id, Name, CreatedDate,License_Type__c, license_subtype__c,Issue_Date__c,Expiration_Date__c,Status__c,
+                                 Sub_status__c,Renewed_Through__c,Primary_Licensee__c,Email__c,Licensee_Phone__c,Doing_Business_As__c,
+                                 //Account 
+                                 Primary_Licensee__r.Name,Primary_Licensee__r.doing_business_as__c,Primary_Licensee__r.Ownership,
+                                 Primary_Licensee__r.Email__c,Primary_Licensee__r.ROC_Address__c,Primary_Licensee__r.ROC_Unit__c,
+                                 Primary_Licensee__r.ROC_City__c,Primary_Licensee__r.ROC_State_Province__c,Primary_Licensee__r.ROC_Zip_Postal_Code__c,
+                                 Primary_Licensee__r.ROC_Country__c,Primary_Licensee__r.Phone,Primary_Licensee__r.Mobile__c
+                                  FROM License__c 
+                                   where LastModifiedDate= TODAY
+                                  Limit 200 OFFSET :offset];
+        
+         JSONGenerator gen = JSON.createGenerator(true);  // Create a JSONGenerator object.
+        gen.writeStartObject();
+        if (result.size() > 0) {
+            
+            // If you want to get url in Bottom of page 
+             gen.writeObjectField('Licenses', result);
+           
+            // This code will give next record of setbelow is the link
+            String nextUrl = '/services/apexrest/TestAPI8?offset=' + (offset + 200);
+            gen.writeObjectField('Next Record_URL', nextUrl);
+            
+            // if you want to get URL in top of page 
+            //gen.writeObjectField('Licenses', result);
+            
+            if (result.size() < 200) {
+        gen.writeObjectField('Info', 'All records have been retrieved.');
+    }
+        } else {
+            gen.writeObjectField('Warning', 'No records found.');
+        }
+            
+            
+                                               
+        gen.writeEndObject();
+        RestContext.response.addHeader('Content-Type', 'application/json');
+        RestContext.response.responseBody = Blob.valueOf(gen.getAsString());
+
+    }
+}
