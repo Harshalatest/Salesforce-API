@@ -1,0 +1,61 @@
+/*
+ * This class showing correct record 
+ * showing next record link in top 
+ * if record is one than nex record in did not show duplicate record
+ * sending no record found. 
+ * */
+@RestResource(urlMapping='/TestAPI7/*')
+global class TestAPI7 {
+    
+    @HttpGet
+    global static void doGet() {
+        RestRequest req = RestContext.request;
+        RestResponse res = RestContext.response;
+        String recIdstr = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+        Integer offset = 0; 
+        if(req.params.get('offset') != null) {
+            offset = Integer.valueOf(req.params.get('offset'));
+        }
+        List<License__c> result = [SELECT Id, Name, License_Type__c, license_subtype__c,
+                                   Status__c,Sub_status__c,Issue_Date__c,Renewed_Through__c,
+                                   Primary_Licensee__c,
+                                   Primary_Licensee__r.Name,
+                                   Primary_Licensee__r.Mobile__c
+                                   FROM License__c 
+                                   where LastModifiedDate= TODAY
+                                  Limit 200 OFFSET :offset];
+        /*Integer totalRecords = result.size();
+        JSONGenerator gen = JSON.createGenerator(true);  // Create a JSONGenerator object.
+        gen.writeStartObject();
+        
+        if (totalRecords > 0) {
+            gen.writeObjectField('Licenses', result);
+            if (totalRecords >= 200) {
+                String nextUrl = '/services/apexrest/TestAPI7?offset=' + (offset + 200);
+                gen.writeObjectField('Next Record URL', nextUrl);
+            }
+        } else {
+            gen.writeObjectField('Warning', 'No records found.');
+        }
+        gen.writeEndObject();
+        RestContext.response.addHeader('Content-Type', 'application/json');
+        RestContext.response.responseBody = Blob.valueOf(gen.getAsString());
+
+*/
+         JSONGenerator gen = JSON.createGenerator(true);  // Create a JSONGenerator object.
+        gen.writeStartObject();
+        if (result.size() > 0) {
+            // This code will give next record of setbelow is the link
+            String nextUrl = '/services/apexrest/TestAPI7?offset=' + (offset + 200);
+            gen.writeObjectField('Next Record_URL', nextUrl);
+            gen.writeObjectField('Licenses', result);
+        } else {
+            gen.writeObjectField('Warning', 'No records found.');
+        }
+        
+        gen.writeEndObject();
+        RestContext.response.addHeader('Content-Type', 'application/json');
+        RestContext.response.responseBody = Blob.valueOf(gen.getAsString());
+
+    }
+}
