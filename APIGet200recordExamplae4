@@ -1,0 +1,61 @@
+/*
+ * This one is working like ROCAPILicenses
+ * facthing 200 recod list */
+
+@RestResource(urlMapping='/TestAPI4/*')
+global class TestAPI4 {
+    @HttpGet
+    global static void doGet() {
+        RestRequest req = RestContext.request;
+        RestResponse res = RestContext.response;
+        String recIdstr = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+        Integer offset = 0; 
+        Integer totalRecords = 0;
+        
+        // add next record link
+        // start
+        if(req.params.get('offset') != null) {
+            offset = Integer.valueOf(req.params.get('offset'));
+        }
+
+       
+        JSONGenerator gen = JSON.createGenerator(true);  // Create a JSONGenerator object.
+        gen.writeStartObject();
+        List<License__c> result = [SELECT Id, Name, License_Type__c, license_subtype__c,
+                      Status__c,Sub_status__c,Issue_Date__c,Renewed_Through__c,
+                      Primary_Licensee__c,
+                      Primary_Licensee__r.Name,
+                       Primary_Licensee__r.doing_business_as__c,
+                       Primary_Licensee__r.Ownership,
+                              Primary_Licensee__r.Email__c,
+                              Primary_Licensee__r.ROC_Address__c,
+                              Primary_Licensee__r.ROC_Unit__c,
+                              Primary_Licensee__r.ROC_City__c,
+                              Primary_Licensee__r.ROC_State_Province__c,
+                              Primary_Licensee__r.ROC_Zip_Postal_Code__c,
+                              Primary_Licensee__r.ROC_Country__c,
+                              Primary_Licensee__r.Phone,
+                              Primary_Licensee__r.Mobile__c
+                       FROM License__c 
+                                  Where 
+                                 LastModifiedDate=TODAY
+                                  Limit 200 OFFSET 200 
+                               //  Limit 200 OFFSET :offset
+                                   //LastModifiedDate = YESTERDAY
+                                  ];
+
+        if(result.size() > 0){
+            gen.writeObjectField('Licenses', result);
+            
+            // if there is more record you will see in next link, if there is no record you will see the message No record found 
+            // this link will showing in end of the page 
+            gen.writeObjectField('Next Record_URL', '/services/apexrest/TestAPI4?offset=' + (offset + 200));
+        } else {
+            gen.writeObjectField('Warning', 'No records found.');
+        }
+
+        gen.writeEndObject();
+        RestContext.response.addHeader('Content-Type', 'application/json');
+         RestContext.response.responseBody = Blob.valueOf(gen.getAsString());
+    }
+}
