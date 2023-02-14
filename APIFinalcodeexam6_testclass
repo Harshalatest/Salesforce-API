@@ -1,0 +1,49 @@
+// 90% code coverge
+@isTest
+public class ROCAPILicenses_Test {
+    @isTest static void RestRequestDetail() {
+       
+        List<Id> entityId = new List<Id>();
+        Account newAccount = new Account(Name = 'Test',
+                                         Ownership = 'Other',
+                                         ROC_Address__c='Test Address',
+                                         ROC_Unit__c='11',
+                                         ROC_City__c='Phoenix',
+                                         ROC_State_Province__c='AZ',
+                                         ROC_Zip_Postal_Code__c='85085',
+                                         ROC_Country__c='United States of America',
+                                         Phone='1234567890',
+                                         Mobile__c='0987654321',
+                                         Email__c='test@test.com'
+                                         
+                                        );
+        Insert newAccount;
+
+         License__c lic = new License__c(License_Type__c = 'General Dual',Type__c ='KA Dual Engineering',
+        Status__c ='Active',
+        Issue_Date__c=system.today(),                                 
+       // ,Sub_status__c='Non-Renewal',
+        Expiration_Date__c = System.today().addDays(-180),
+        Primary_Licensee__c= newAccount.Id ); 
+       
+        Insert lic;
+        
+        string licName = [Select id,Name From License__c limit 1]?.Name;
+        // Set up a test request
+        RestRequest request = new RestRequest();
+        RestResponse res = new RestResponse();
+        request.requestUri =
+            'https://azroc--full.sandbox.my.salesforce.com/services/apexrest/ROCAPILicenses/'
+           // + licName
+            ;
+        request.httpMethod = 'GET';
+        RestContext.request = request;
+        RestContext.response = res;
+        // Call the method to test
+         ROCAPILicenses.doGet();
+        // Verify results
+      
+       
+    }
+  
+}
