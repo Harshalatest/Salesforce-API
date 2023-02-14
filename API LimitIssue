@@ -1,0 +1,53 @@
+/*<-- ************************************************************************************************************
+ApiNASCLAForRoc- This class is working but geeting limit issue 
+
+************************************************************************************************************* >*/
+@RestResource(urlMapping='/APINASCLA/*') 
+global with sharing class ApiNASCLAForRoc {  
+     
+    @HttpGet
+    global static List<License__c> doGet() {
+        RestRequest req = RestContext.request;
+        RestResponse res = RestContext.response;
+        String LicId = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+          Integer offset = 0; 
+        List<License__c> result = new List<License__c>();
+    Boolean done = false;
+    
+    while (!done) {
+        // retrieve a batch of records
+        // List<License__c> result = [SELECT Id, Name,
+        List<License__c> batch = [SELECT Id, Name, CreatedDate,License_Type__c, license_subtype__c,Issue_Date__c,Expiration_Date__c,Status__c,
+                                 Sub_status__c,Renewed_Through__c,Primary_Licensee__c,Email__c,Licensee_Phone__c,Doing_Business_As__c,
+                                 //Account 
+                                 Primary_Licensee__r.Name,Primary_Licensee__r.doing_business_as__c,Primary_Licensee__r.Ownership,
+                                 Primary_Licensee__r.Email__c,Primary_Licensee__r.ROC_Address__c,Primary_Licensee__r.ROC_Unit__c,
+                                 Primary_Licensee__r.ROC_City__c,Primary_Licensee__r.ROC_State_Province__c,Primary_Licensee__r.ROC_Zip_Postal_Code__c,
+                                 Primary_Licensee__r.ROC_Country__c,Primary_Licensee__r.Phone,Primary_Licensee__r.Mobile__c
+                                 //FROM License__c WHERE Id = :LicId 
+                                 // FROM License__c WHERE LastModifiedDate = TODAY
+                      FROM License__c 
+                                 //Where Status__c='Active'
+                                  //OFFSET :offset
+                                //limit 50000
+                                 //OFFSET 0
+                                 ];
+       
+        //System.debug ('Total heap size =  ' +limits.getHeapSize());
+         // add the records to the final result
+       result.addAll(batch);
+        
+        // increment the offset
+        offset += 50000;
+        
+        // check if all records have been retrieved
+        if (batch.size() < 50000) {
+            done = true;
+        }
+
+    }
+        
+        return result;
+    }
+ 
+}
