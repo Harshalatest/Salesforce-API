@@ -1,0 +1,329 @@
+@isTest // (SeeAllData=True)
+private class ROCPortal_Controller_POST_TEST {
+
+    @isTest static void test_postData1 () {
+        Test.startTest();
+        ROCPortalController_TestDataLoader.createTestRecords(2, 1);
+        ROCPortalController_TestDataLoader.createApplications(2, 1);
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        
+        Application__c chApp = [ SELECT Id, Name, Applicant__c, Account__r.Name, Account__c FROM Application__c LIMIT 1 ];
+        
+        req.requestURI = '/services/apexrest/ROCp';
+        req.httpMethod = 'POST';
+        req.addParameter('f','addAccountAddress');
+        Map<String, Object> jsonMsg = new Map<String, Object>();
+            jsonMsg.put('f','addAccountAddress');
+            jsonMsg.put('ContactId', chApp.Applicant__c);
+            jsonMsg.put('AccountId', chApp.Account__c);
+            jsonMsg.put('AddressType', 'Business');
+            jsonMsg.put('Address', '1 Test Address St');
+            jsonMsg.put('City', 'Testtest');
+            jsonMsg.put('State', 'AZ');
+            jsonMsg.put('Zip', '85000');
+            jsonMsg.put('Country', 'United States of America');
+        String JsonM = JSON.serialize(jsonMsg);
+        req.requestBody = Blob.valueOf(JsonM);
+        RestContext.request = req;
+        RestContext.response = res;
+        
+        List<sObject> resp = ROCPortalController_POST.postComplaints();
+        
+        System.assertEquals(1, resp.size());
+        Test.stopTest();
+    }
+    
+    @isTest static void test_postData2 () {
+        Test.startTest();
+        ROCPortalController_TestDataLoader.createTestRecords(2, 1);
+        ROCPortalController_TestDataLoader.createApplications(2, 1);
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        
+        Application__c chApp = [ SELECT Id, Name, Applicant__c, Account__r.Name, Account__c FROM Application__c LIMIT 1 ];
+        
+        req.requestURI = '/services/apexrest/ROCp';
+        req.httpMethod = 'POST';
+        req.addParameter('f','newAccount');
+        Map<String, Object> jsonMsg = new Map<String, Object>();
+        jsonMsg.put('f','newAccount');
+        jsonMsg.put('Applicant_Phone_Main','6025559999');
+        jsonMsg.put('Applicant_Email','test@test.com');
+        jsonMsg.put('Ownership','LLC');
+        jsonMsg.put('Doing_Business_As','');
+        jsonMsg.put('AZ_Corp_File_Number','L9999999');
+        jsonMsg.put('Member_Managed','Member-Managed');
+        jsonMsg.put('LLC_Type','LLC');
+        jsonMsg.put('UniqueID','yfvguihbononoiuf');
+        jsonMsg.put('UserContactId', chApp.Applicant__c);
+        jsonMsg.put('AcctName', chApp.Account__r.Name+'test3');
+        jsonMsg.put('Account_Name', chApp.Account__r.Name+'test3');
+        jsonMsg.put('Taxpayer_Id_Number','Business');
+        jsonMsg.put('Mailing_Address','1 Test Address St');
+        jsonMsg.put('Mailing_City','Testtest');
+        jsonMsg.put('Mailing_State','AZ');
+        jsonMsg.put('Mailing_Zip_Post)_Code','85000');
+        jsonMsg.put('Mailing_Country','United States of America');
+        String JsonM = JSON.serialize(jsonMsg);
+        req.requestBody = Blob.valueOf(JsonM);
+        RestContext.request = req;
+        RestContext.response = res;
+        
+        List<sObject> resp = ROCPortalController_POST.postComplaints();
+        
+        System.assertEquals(1, resp.size());
+        Test.stopTest();
+    }
+    
+    @isTest static void test_postData2a () {
+        Test.startTest();
+        ROCPortalController_TestDataLoader.createTestRecords(2, 1);
+        ROCPortalController_TestDataLoader.createApplications(2, 1);
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        
+        Application__c chApp = [ SELECT Id, Name, Applicant__c, Account__r.Name, Account__c FROM Application__c LIMIT 1 ];
+        
+        req.requestURI = '/services/apexrest/ROCp';
+        req.httpMethod = 'POST';
+        req.addParameter('f','newAccount');
+        Map<String, Object> jsonMsg = new Map<String, Object>();
+        jsonMsg.put('f','newAccount');
+        jsonMsg.put('Applicant_Phone_Main','6025559999');
+        jsonMsg.put('Applicant_Email','test@test.com');
+        jsonMsg.put('Ownership','CORRUPTDATASOITWONTADD');
+        jsonMsg.put('Doing_Business_As','');
+        jsonMsg.put('AZ_Corp_File_Number','L9999999');
+        jsonMsg.put('Member_Managed','Member-Managed');
+        jsonMsg.put('LLC_Type','LLC');
+        jsonMsg.put('UniqueID','yfvguihbononoiuf');
+        jsonMsg.put('UserContactId', chApp.Applicant__c);
+        jsonMsg.put('AcctName', chApp.Account__r.Name+'test');
+        jsonMsg.put('Account_Name', chApp.Account__r.Name+'test');
+        jsonMsg.put('Taxpayer_Id_Number','Business');
+        jsonMsg.put('Mailing_Address','1 Test Address St');
+        jsonMsg.put('Mailing_City','Testtest');
+        jsonMsg.put('Mailing_State','AZ');
+        jsonMsg.put('Mailing_Zip_Post)_Code','85000');
+        jsonMsg.put('Mailing_Country','United States of America');
+        String JsonM = JSON.serialize(jsonMsg);
+        req.requestBody = Blob.valueOf(JsonM);
+        RestContext.request = req;
+        RestContext.response = res;
+        
+        List<sObject> resp = ROCPortalController_POST.postComplaints();
+        
+        System.assertEquals(1, resp.size());
+        Test.stopTest();
+    }
+    
+    @isTest static void test_postData2b () {
+        Test.startTest();
+        ROCPortalController_TestDataLoader.createTestRecords(2, 1);
+        ROCPortalController_TestDataLoader.createApplications(2, 1);
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        
+        Application__c chApp = [ SELECT Id, Name, Applicant__c, Account__r.Name, Account__c, Account__r.Ownership FROM Application__c LIMIT 1 ];
+        
+        req.requestURI = '/services/apexrest/ROCp';
+        req.httpMethod = 'POST';
+        req.addParameter('f','newAccount');
+        Map<String, Object> jsonMsg = new Map<String, Object>();
+        jsonMsg.put('f','newAccount');
+        jsonMsg.put('Applicant_Phone_Main','6025559988');
+        jsonMsg.put('Applicant_Email','test12@test12.com');
+        jsonMsg.put('Ownership', chApp.Account__r.Ownership );
+        jsonMsg.put('Doing_Business_As','New Business Account');
+        jsonMsg.put('AZ_Corp_File_Number','L9999998');
+        jsonMsg.put('Member_Managed','');
+        jsonMsg.put('LLC_Type','');
+        jsonMsg.put('UniqueID','yfvguihbonoggggg');
+        jsonMsg.put('UserContactId', chApp.Applicant__c);
+        jsonMsg.put('AcctName', chApp.Account__r.Name+'test2');
+        jsonMsg.put('Account_Name', 'This is a New Business to Add');
+        jsonMsg.put('Taxpayer_Id_Number','Business');
+        jsonMsg.put('Mailing_Address','102 Test Address St');
+        jsonMsg.put('Mailing_City','Testtesttt');
+        jsonMsg.put('Mailing_State','AZ');
+        jsonMsg.put('Mailing_Zip_Post)_Code','85100');
+        jsonMsg.put('Mailing_Country','United States of America');
+        String JsonM = JSON.serialize(jsonMsg);
+        req.requestBody = Blob.valueOf(JsonM);
+        RestContext.request = req;
+        RestContext.response = res;
+        
+        List<sObject> resp = ROCPortalController_POST.postComplaints();
+        
+        System.assertEquals(1, resp.size());
+        Test.stopTest();
+    }
+    
+    @isTest static void test_postData3 () {
+        Test.startTest();
+        ROCPortalController_TestDataLoader.createTestRecords(2, 1);
+        ROCPortalController_TestDataLoader.createApplications(2, 1);
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        
+        Application__c chApp = [ SELECT Id, Name, Applicant__c, Account__r.Name, Account__c FROM Application__c LIMIT 1 ];
+        
+        req.requestURI = '/services/apexrest/ROCp';
+        req.httpMethod = 'POST';
+        req.addParameter('f','addUser');
+        Map<String, Object> jsonMsg = new Map<String, Object>();
+        jsonMsg.put('f','addUser');
+        jsonMsg.put('fFName','Testy');
+        jsonMsg.put('fName','Testy M Tester L');
+        jsonMsg.put('fUsername','test@test.com');
+        jsonMsg.put('fMName','M');
+        jsonMsg.put('fLName','Tester');
+        jsonMsg.put('fSuffix','L');
+        jsonMsg.put('fEmail','test@test.com');
+        jsonMsg.put('fAccRelationship','');
+        jsonMsg.put('fGovId','G7777777');
+        jsonMsg.put('rawPass','Th!sIsTheirP@ssword');
+        String JsonM = JSON.serialize(jsonMsg);
+        req.requestBody = Blob.valueOf(JsonM);
+        RestContext.request = req;
+        RestContext.response = res;
+        
+        List<sObject> resp = ROCPortalController_POST.postComplaints();
+        
+        System.assertEquals(1, resp.size());
+        Test.stopTest();
+    }
+    
+    @isTest static void test_postData3a () {
+        Test.startTest();
+        ROCPortalController_TestDataLoader.createTestRecords(2, 1);
+        ROCPortalController_TestDataLoader.createApplications(2, 1);
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        
+        Application__c chApp = [ SELECT Id, Name, Applicant__c, Applicant__r.Name, Applicant__r.FirstName, Applicant__r.LastName, Applicant__r.MiddleName, Applicant__r.Suffix, Applicant__r.Email FROM Application__c LIMIT 1 ];
+        
+        req.requestURI = '/services/apexrest/ROCp';
+        req.httpMethod = 'POST';
+        req.addParameter('f','addUser');
+        Map<String, Object> jsonMsg = new Map<String, Object>();
+        jsonMsg.put('f','addUser');
+        jsonMsg.put('fFName', chApp.Applicant__r.FirstName );
+        jsonMsg.put('fName', chApp.Applicant__r.Name );
+        jsonMsg.put('fUsername', chApp.Applicant__r.Email );
+        jsonMsg.put('fMName', chApp.Applicant__r.MiddleName );
+        jsonMsg.put('fLName', chApp.Applicant__r.LastName );
+        jsonMsg.put('fSuffix', chApp.Applicant__r.Suffix );
+        jsonMsg.put('fEmail', chApp.Applicant__r.Email );
+        jsonMsg.put('fAccRelationship','');
+        jsonMsg.put('fGovId','G7777777');
+        jsonMsg.put('rawPass','Th!sIsTheirP@ssword');
+        String JsonM = JSON.serialize(jsonMsg);
+        req.requestBody = Blob.valueOf(JsonM);
+        RestContext.request = req;
+        RestContext.response = res;
+        
+        List<sObject> resp = ROCPortalController_POST.postComplaints();
+        
+        System.assertEquals(1, resp.size());
+        Test.stopTest();
+    }
+
+    @isTest static void test_postData4 () {
+        Test.startTest();
+        ROCPortalController_TestDataLoader.createTestRecords(2, 1);
+        ROCPortalController_TestDataLoader.createApplications(2, 1);
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        
+        Application__c chApp = [ SELECT Id, Name, Applicant__c, Account__c FROM Application__c LIMIT 1 ];
+        
+        req.requestURI = '/services/apexrest/ROCp';
+        req.httpMethod = 'POST';
+        req.addParameter('f','addAddress');
+        Map<String, Object> jsonMsg = new Map<String, Object>();
+        jsonMsg.put('f','addAddress');
+        jsonMsg.put('ContactId', chApp.Applicant__c);
+        jsonMsg.put('AccountId', chApp.Account__c);
+        jsonMsg.put('AddressType','Business');
+        jsonMsg.put('Address','1 Test Address St');
+        jsonMsg.put('City','Testtest');
+        jsonMsg.put('State','AZ');
+        jsonMsg.put('Zip','85000');
+        jsonMsg.put('Country','United States of America');
+        String JsonM = JSON.serialize(jsonMsg);
+        req.requestBody = Blob.valueOf(JsonM);
+        RestContext.request = req;
+        RestContext.response = res;
+        
+        List<sObject> resp = ROCPortalController_POST.postComplaints();
+        
+        System.assertEquals(1, resp.size());
+        Test.stopTest();
+    }
+
+    @isTest static void test_postData5 () {
+        Test.startTest();
+        ROCPortalController_TestDataLoader.createTestRecords(2, 1);
+        ROCPortalController_TestDataLoader.createApplications(2, 1);
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        
+        Application__c chApp = [ SELECT Id, Name, Applicant__c, Account__c FROM Application__c LIMIT 1 ];
+        
+        req.requestURI = '/services/apexrest/ROCp';
+        req.httpMethod = 'GET';
+        req.addParameter('f','createFees');
+        req.addParameter('appId', chApp.Id);
+        RestContext.request = req;
+        RestContext.response = res;
+        
+        List<sObject> resp = ROCPortalController_POST.getComplaints();
+        
+        System.assertEquals(0, resp.size());
+        Test.stopTest();
+    }
+
+    @isTest static void test_nothingPost () {
+        Test.startTest();
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        
+        req.requestURI = '/services/apexrest/ROCp';
+        req.httpMethod = 'POST';
+        req.addParameter('f','');
+        Map<String, Object> jsonMsg = new Map<String, Object>();
+        jsonMsg.put('f','');
+        String JsonM = JSON.serialize(jsonMsg);
+        req.requestBody = Blob.valueOf(JsonM);
+        RestContext.request = req;
+        RestContext.response = res;
+        
+        List<sObject> resp = ROCPortalController_POST.getComplaints();
+        
+        System.assertEquals(0, resp.size());
+        Test.stopTest();
+    }
+
+    @isTest static void test_nothingPost2 () {
+        Test.startTest();
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        
+        req.requestURI = '/services/apexrest/ROCp';
+        req.httpMethod = 'POST';
+        Map<String, Object> jsonMsg = new Map<String, Object>();
+        jsonMsg.put('f','');
+        String JsonM = JSON.serialize(jsonMsg);
+        req.requestBody = Blob.valueOf(JsonM);
+        RestContext.request = req;
+        RestContext.response = res;
+        
+        List<sObject> resp = ROCPortalController_POST.postComplaints();
+        
+        System.assertEquals(0, resp.size());
+        Test.stopTest();
+    }
+    
+}
