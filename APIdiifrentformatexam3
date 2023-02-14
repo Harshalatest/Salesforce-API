@@ -1,0 +1,128 @@
+/*
+ * Query addes qp record 
+ *   Jason format is working - giveing next record URL
+ * HTml format is working - giveing next record URL- not giving qp record need to HTML tag 
+ * XML - need to fix tag 
+ * */
+
+@RestResource(urlMapping='/TestAPI6/*')
+global class TestAPI6 {
+    @HttpGet
+    global static void doGet() {
+        RestRequest req = RestContext.request;
+        RestResponse res = RestContext.response;
+        String recIdstr = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+        Integer offset = 0; 
+        Integer totalRecords = 0;
+        if(req.params.get('offset') != null) {
+            offset = Integer.valueOf(req.params.get('offset'));
+        }
+        JSONGenerator gen = JSON.createGenerator(true);  // Create a JSONGenerator object.
+        gen.writeStartObject();
+        List<License__c> result = [SELECT Id, Name, License_Type__c, license_subtype__c,
+                                   Primary_Licensee__r.Name,
+                                   (SELECT Id, Name, Qualifying_Party_Name__c,Account_Contact__c,Status__c,Application__c
+                                                                FROM Qualifying_Partys2__r WHERE 
+                                                                Status__c = 'Active' 
+                                   // LIMIT 1
+                                   )
+                                   
+                                   Primary_Licensee__r.doing_business_as__c,
+                                   Primary_Licensee__r.Ownership,
+                                   Primary_Licensee__r.Mobile__c
+                                   FROM License__c Limit 200 OFFSET :offset
+                                   // off set will give 200 record set so system will not throwing error 
+                                   //where 
+                                   // LastModifiedDate = TODAY
+                                   
+                                   //LastModifiedDate = YESTERDAY
+                                  ];
+  
+      
+        
+        // This is the JASON return   
+           
+        if (result.size() > 0) {
+            // This code will give next record of setbelow is the link
+            String nextUrl = '/services/apexrest/TestAPI6?offset=' + (offset + 200);
+            gen.writeObjectField('Next Record_URL', nextUrl);
+            gen.writeObjectField('Licenses', result);
+        } else {
+            gen.writeObjectField('Warning', 'No records found.');
+        }
+        
+        gen.writeEndObject();
+        RestContext.response.addHeader('Content-Type', 'application/json');
+        RestContext.response.responseBody = Blob.valueOf(gen.getAsString());
+
+
+// Jason  format is done 
+        
+        
+  /* // This is the HTML return      
+        //HTML return 
+         if (result.size() > 0) {
+    String nextUrl = '/services/apexrest/TestAPI6?offset=' + (offset + 200);
+    String html = '<html><body><h1>Licenses</h1><ul>';
+    for (License__c lic : result) {
+        //html += '<li>' + lic.Name + ' (' + lic.License_Type__c + ')' + '</li>';
+       // html += '<li>'+ ' License Name  =' + lic.Name +'</li>';
+        html += '<li>' + lic.Name +'</li>';
+        html += '<li>' + lic.License_Type__c +'</li>';
+         html += '<li>' + lic.license_subtype__c +'</li>';
+         html += '<li>' + lic.Primary_Licensee__r.Name +'</li>';
+        html += '<li>' + lic.Primary_Licensee__r.Ownership +'</li>';
+        html += '<li>' + lic.Primary_Licensee__r.Mobile__c +'</li>';
+ 
+    }
+    html += '</ul><p><a href="' + nextUrl + '">Next Record</a></p></body></html>';
+    RestContext.response.addHeader('Content-Type', 'text/html');
+    RestContext.response.responseBody = Blob.valueOf(html);
+} else {
+    String html = '<html><body><p>No records found.</p></body></html>';
+    RestContext.response.addHeader('Content-Type', 'text/html');
+    RestContext.response.responseBody = Blob.valueOf(html);
+}
+
+
+
+
+// HTML format is done 
+
+ */ 
+        
+
+/*        // XML Format this xml showing error for line 82
+         
+     if (result.size() > 0) {
+    String nextUrl = '/services/apexrest/TestAPI6?offset=' + (offset + 200);
+    String xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<licenses>\n';
+    for (License__c lic : result) {
+        xml += '  <license>\n';
+        xml += '    <name>' + lic.Name + '</name>\n';
+        xml += '    <type>' + lic.License_Type__c + '</type>\n';
+        xml += '    <type>' + lic.license_subtype__c + '</type>\n';
+        xml += '    <name>' +lic.Primary_Licensee__r.Name+ '</name>\n';
+        xml += '    <name>' + lic.Name + '</name>\n';
+        xml += '  </license>\n';
+    }
+    xml += '  <link rel="next" href="' + nextUrl + '"/>\n';
+    xml += '</licenses>\n';
+    RestContext.response.addHeader('Content-Type', 'application/xml');
+    RestContext.response.responseBody = Blob.valueOf(xml);
+} else {
+    String xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<warning>No records found.</warning>\n';
+    RestContext.response.addHeader('Content-Type', 'application/xml');
+    RestContext.response.responseBody = Blob.valueOf(xml);
+}
+
+
+*/
+
+     
+
+
+    }
+}
