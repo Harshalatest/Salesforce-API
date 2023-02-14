@@ -1,0 +1,238 @@
+@RestResource(urlMapping='/ROCp/*')
+global class ROCPortalController_POST {
+    
+    @HttpGet
+    global static List<sObject> getComplaints() {
+        RestRequest req = RestContext.request;
+        RestResponse resp = RestContext.response;
+        List<sObject> acct = [ SELECT Id, Name FROM Account WHERE Name = 'impossibletomatchstringjustwonthappen' ];
+        return acct;
+        // closed down the GET options on this script. GET will only return a null result
+    }
+    
+    @HttpPost 
+    global static List<sObject> postComplaints() {
+        RestRequest req = RestContext.request;
+        RestResponse resp = RestContext.response;
+        String f = req.params.get('f');
+        if ( f == '' ) {
+            resp.addHeader('Content-type', 'application/json');
+            getF jsonFBody;
+            try { jsonFBody = (getF) JSON.deserialize(req.requestBody.toString(), getF.class); } Catch (Exception ee) {}
+            f = jsonFBody.f; 
+        }
+        Integer cnt = 0;
+        
+        if ( f == 'addAccountAddress' ) {
+            resp.addHeader('Content-Type', 'application/json');
+            fromJSON6 jsonBody;
+            try { jsonBody = (fromJSON6) JSON.deserialize(req.requestBody.toString(), fromJSON6.class); } Catch (Exception e) {}
+            String acctId = jsonBody.AccountId;
+            String acctAddr = jsonBody.Address;
+            String acctCity = jsonBody.City;
+            String acctState = jsonBody.State;
+            String acctZip = jsonBody.Zip;
+            String acctCountry = jsonBody.Country;
+            Parcel__c address = new Parcel__c();
+            address.Account__c = acctId;
+            address.Street2__c = acctAddr;
+            address.City__c = acctCity;
+            address.State__c = acctState;
+            address.Post_Zip_Code__c = acctZip;
+            address.Country__c = acctCountry;
+            //address.Address_Type__c = 'Other';
+            insert address;
+            Address_Contact__c parc = new Address_Contact__c();
+            parc.Address__c = address.Id;
+            parc.Account__c = acctId;
+            parc.Physical_Business_Address__c = true;
+            insert parc;
+            List<sObject> findadd = [ SELECT Id, Name FROM Parcel__c WHERE Id = :address.Id ];
+            return findadd;
+        }
+        else if ( f == 'newAccount' ) {
+            resp.addHeader('Content-type', 'application/json');
+            String acctId = '';
+            fromJSON5 jsonBody;
+            try { jsonBody = (fromJSON5) JSON.deserialize(req.requestBody.toString(), fromJSON5.class); } Catch (Exception ee) {}
+            String acctName = jsonBody.Account_Name.replaceAll('::', '\'') != null ? jsonBody.Account_Name.replaceAll('::', '\'') : '';
+            acctName = acctName.trim();
+            String acctAddr = jsonBody.Mailing_Address.replaceAll('::', '\'') != null ? jsonBody.Mailing_Address.replaceAll('::', '\'') : '';
+            String acctCity = jsonBody.Mailing_City.replaceAll('::', '\'') != null ? jsonBody.Mailing_City.replaceAll('::', '\'') : '';
+            String ownership = jsonBody.Ownership.replaceAll('::', '\'') != null ? jsonBody.Ownership.replaceAll('::', '\'') : ''; 
+            String azccId = jsonBody.AZ_Corp_File_Number.replaceAll('::', '\'') != null ? jsonBody.AZ_Corp_File_Number.replaceAll('::', '\'') : '';
+            system.debug('account name is ' + acctName);
+            List<Account> acctCheck = [
+                SELECT Name, Id 
+                FROM Account 
+                WHERE 
+                Name LIKE :acctName 
+                AND Ownership = :ownership
+                LIMIT 1 
+            ];
+            //if ( !acctCheck.isEmpty() ) {
+                for ( Account acc : acctCheck ) {
+                    acctId = acc.Id;
+                    cnt = 1;
+                }
+            //} else {
+            if ( acctId == '' ) {
+                String rocState = jsonBody.Mailing_State; // == 'Arizona' ? 'AZ' : 'AZ';
+                String busType = 'Business'; // jsonBody.Ownership == 'Sole Proprietorship' ? 'Individual' : 'Business';
+                String act = '';
+                List<Account> getact = [ SELECT RecordTypeId FROM Account WHERE Name LIKE '%Home Depot%' OR Name LIKE '%MST Test%' OR Name LIKE '%TestAccount%' LIMIT 1 ];
+                if ( !getact.isEmpty() ) {
+                    for ( Account actc : getact ) {
+                        act = actc.RecordTypeId;
+                    }
+                } else {
+                    act = '012r00000003irJAAQ'; // default to Id for dev roc recordtypeid -- 012t0000000Gv3mAAC
+                }
+                Account addAcct = new Account();
+                    addAcct.Name = acctName;
+                    addAcct.ROC_Address__c = acctAddr;
+                    addAcct.ROC_City__c = acctCity;
+                    addAcct.ROC_State_Province__c = rocState;
+                    addAcct.ROC_ZIP_Postal_Code__c = jsonBody.Mailing_Zip_Post_Code;
+                    addAcct.ROC_Country__c = jsonBody.Mailing_Country;
+                    addAcct.Ownership = jsonBody.Ownership;
+                    //addAcct.Doing_Business_As__c = jsonBody.Doing_Business_As;
+                    addAcct.Email__c = jsonBody.Applicant_Email;
+                    addAcct.Federal_Tax_Identification_Number__c = jsonBody.Taxpayer_Id_Number;
+                    addAcct.LLC_Management__c = jsonBody.LLC_Type;
+                	addAcct.LLC_Management__c = jsonBody.Member_Managed;
+                    addAcct.Phone = jsonBody.Applicant_Phone_Main;
+                	addAcct.A_C_C_File_Number__c = azccId;
+                    addAcct.Status__c = 'Active';
+                    addAcct.RecordTypeId = act;
+                    addAcct.Type = busType;
+                	addAcct.Doing_Business_As__c = jsonBody.UniqueID;
+                /*
+                List<Account> checkagain = [ SELECT Id, Name FROM Account WHERE Name LIKE :acctName LIMIT 1 ];
+                if ( !checkagain.isEmpty() ) {
+                    for ( Account gta : checkagain ) {
+                        acctId = gta.Id;
+                    	cnt = 1;
+                    }
+                } else {
+                //if ( acctId == '' ) {
+                    List<Account> getdupes2 = [ SELECT Id, Name FROM Account WHERE Name LIKE :acctName AND Id <> :acctId ]; // AND CreatedDate > :minute 
+                    for ( Account gd2 : getdupes2 ) {
+                        acctId = gd2.Id;
+                        cnt = 1;
+                    }
+				*/
+                	if ( cnt == 0 ) {
+                        insert addAcct;
+                        if (  acctAddr.trim() != '' ) {
+                            acctId = addAcct.Id;
+                            Parcel__c address = new Parcel__c();
+                            address.Account__c = acctId;
+                            address.Street2__c = acctAddr;
+                            address.City__c = acctCity;
+                            address.State__c = rocState;
+                            address.Post_Zip_Code__c = jsonBody.Mailing_Zip_Post_Code;
+                            address.Country__c = jsonBody.Mailing_Country;
+                            insert address;
+                            Address_Contact__c parc = new Address_Contact__c();
+                            parc.Address__c = address.Id;
+                            parc.Account__c = acctId;
+                            parc.Physical_Business_Address__c = true;
+                            insert parc;
+                        }
+                        cnt = 1;
+                    }
+                //}
+            }
+            List<Account> findApp = [ SELECT Id, Name, Status__c FROM Account WHERE Id = :acctId ];
+            return findApp;
+        } 
+        else if ( f == 'addUser' ) {
+            resp.addHeader('Content-type','application/json');
+            fromJSON3 jsonBody ;
+            try {
+                jsonBody = (fromJson3) JSON.deserialize(req.requestBody.toString(), fromJSON3.class);
+            } Catch(Exception ee) {}
+            // need to check for contact
+            String contId = '';
+            String FirstName = jsonBody.fFName.replaceAll('!', '\'') != null ? jsonBody.fFName.replaceAll('!', '\'') : '';
+            //String MiddleName = jsonBody.fMName.replaceAll('!', '\'') != null ? jsonBody.fMName.replaceAll('!', '\'') : '';
+            String LastName = jsonBody.fLName.replaceAll('!', '\'') != null ? jsonBody.fLName.replaceAll('!', '\'') : '';
+            //String Suffix = jsonBody.fSuffix.replaceAll('!', '\'') != null ? jsonBody.fSuffix.replaceAll('!', '\'') : '';
+            List<Contact> contactCheck = [ SELECT Name,Id FROM Contact WHERE Email = :jsonBody.fEmail AND FirstName = :FirstName AND LastName = :LastName];
+            if ( !contactCheck.isEmpty() ) {
+                for ( Contact cc : contactCheck ) {
+                   contId = cc.Id;
+                }
+            } else {
+                // get Citizen account
+                Account citizen = [ SELECT Id, Name FROM Account WHERE Name = 'Citizen' LIMIT 1 ]; //  AND Type = 'Business'
+                Contact ncont = new Contact(); 
+                    ncont.FirstName = FirstName; 
+                    ncont.MiddleName = jsonBody.fMName.replaceAll('!', '\'') != null ? jsonBody.fMName.replaceAll('!', '\'') : ''; // MiddleName;  
+                    ncont.LastName = LastName;  
+                    ncont.Suffix = jsonBody.fSuffix.replaceAll('!', '\'') != null ? jsonBody.fSuffix.replaceAll('!', '\'') : ''; // Suffix; 
+                    ncont.Email = jsonBody.fEmail; 
+                	ncont.Drivers_License_or_Government_ID_No__c = jsonBody.fGovId.replaceAll('!','\'');
+                    ncont.AccountId = citizen.Id; //'00135000004NdWLAA0'; // 00135000003WhjZAAS
+                    ncont.Aliases__c = FirstName + ' ' + ncont.MiddleName + ' ' + LastName + ' ' + ncont.Suffix; 
+                insert ncont;
+                contId = ncont.Id; // old profileId : 00e35000000Lw4mAAC, 00et0000000HhZGAA0
+            }
+            List<Contact> accounts = [SELECT Name,Id,Email from Contact WHERE Id = :contId LIMIT 1 ];
+            return accounts;
+        } 
+        else if ( f == 'addAddress' ) {
+            resp.addHeader('Content-type','application/json');
+            fromJSON6 jsonBody ;
+            try {
+                jsonBody = (fromJson6) JSON.deserialize(req.requestBody.toString(), fromJSON6.class);
+            } Catch(Exception ee) {}
+            // need to check for contact
+            String contId = '';
+            String contName = '';
+            String acctId = '';
+            List<Contact> contactCheck = [SELECT Name,Id, AccountId FROM Contact WHERE Id = :jsonBody.ContactId ];
+            if ( !contactCheck.isEmpty() ) {
+                for ( Contact cc : contactCheck ) {
+                   contId = cc.Id;
+                   contName = cc.Name;
+                    acctId = cc.AccountId;
+                }
+                Parcel__c parcel = new Parcel__c();
+                    parcel.Street2__c = jsonBody.Address;
+                    parcel.City__c = jsonBody.City;
+                    parcel.State__c = jsonBody.State;
+                    parcel.Country__c = jsonBody.Country;
+                    parcel.Post_Zip_Code__c = jsonBody.Zip;
+                    parcel.Account__c = acctId;
+                    parcel.Primary_Contact__c = contId;
+               insert parcel;
+            } // ignore if contact not found
+            List<Parcel__c> accounts = [SELECT Name,Id,Primary_Contact__c FROM Parcel__c WHERE Primary_Contact__c = :contId AND Street2__c = :jsonBody.Address LIMIT 1 ];
+            return accounts;
+        } 
+        else {
+            List<Account> accounts = [SELECT Name FROM Account WHERE Name = 'Something impossible that will never be the name of a thing 8944578546895'];
+        	return accounts;
+        } 
+   }
+      
+    public class getF {
+        public String f = '';
+    }
+    
+    public class fromJSON6 {
+        public String f = ''; public String ContactId = ''; public String AccountId = ''; public String AddressType = ''; public String Address = ''; public String Address2 = ''; public String City = ''; public String State = ''; public String Zip = ''; public String Country = '';
+    }
+    
+    public class fromJSON5 {
+        public String f = ''; public String UserContactId = ''; public String AcctName = ''; public String Account_Name = ''; public String Taxpayer_Id_Number = ''; public String Mailing_Address = ''; public String Mailing_City = ''; public String Mailing_State = ''; public String Mailing_Zip_Post_Code = ''; public String Mailing_Country = '';
+        public String Applicant_Phone_Main = ''; public String Applicant_Email = ''; public String Ownership = ''; public String Doing_Business_As = ''; public String AZ_Corp_File_Number = ''; public String Member_Managed = ''; public String LLC_Type = ''; public String UniqueID = '';
+    }
+    
+    public class fromJSON3 {
+        public String f = ''; public String fUsername = ''; public String fName = ''; public String fFName = ''; public String fMName = ''; public String fLName = '';  public String fSuffix = ''; public String fEmail = ''; public String fAccRelationship = ''; public String fGovId = '';  public String rawPass = '';
+    }
+        
+}
