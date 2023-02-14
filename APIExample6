@@ -1,0 +1,27 @@
+/*
+ * Faching record, working perfect but geetng limit of record issue.
+ * if you add limit working perfect */
+
+@RestResource(urlMapping='/TestAPI5/*')
+global class TestAPI5 {
+    @HttpGet
+    global static void doGet() {
+        Integer offset = 0; 
+        Integer batchSize = 2000;
+        JSONGenerator gen = JSON.createGenerator(true);
+        gen.writeStartObject();
+        List<License__c> result = [SELECT Id, Name, License_Type__c, license_subtype__c,
+                      Status__c, Primary_Licensee__r.Email__c,Primary_Licensee__r.Mobile__c
+                       FROM License__c LIMIT :batchSize OFFSET :offset];
+        while(result.size() > 0) {
+            gen.writeObjectField('Licenses', result);
+            offset += batchSize;
+            result = [SELECT Id, Name, License_Type__c, license_subtype__c,
+                      Status__c, Primary_Licensee__r.Email__c,Primary_Licensee__r.Mobile__c
+                       FROM License__c LIMIT :batchSize OFFSET :offset];
+        }
+        gen.writeEndObject();
+        RestContext.response.addHeader('Content-Type', 'application/json');
+        RestContext.response.responseBody = Blob.valueOf(gen.getAsString());
+    }
+}
